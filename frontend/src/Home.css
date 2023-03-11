@@ -1,0 +1,121 @@
+.content {
+    position: absolute;
+    width: 50vw;
+    height: 70vh;
+    top: 16vh;
+    left: 24vw;
+    background-color: rgb(4, 160, 4);
+    border: 2px solid rgb(4, 244, 4);
+    border-radius: 100px;
+    opacity: 0.6;
+    z-index: 4;
+}
+
+.section-profile {
+    position: relative;
+    top: 5%;
+    left: 10%;
+    width: 80%;
+    height: 50%;
+    background-color: rgb(4, 160, 4);
+    border: 2px solid rgb(4, 244, 4);
+    border-top-left-radius: 40px;
+    border-top-right-radius: 40px;
+    z-index: 5;
+}
+
+.section-profile-title {
+    margin-top: 1vh;
+    font-size: 1.5vw;
+    font-weight: bold;
+    border-bottom: 1px solid rgb(4, 244, 4);
+    font-family: "Orbitron", sans-serif;
+}
+
+.profile-icon {
+    position: relative;
+    height: 200px;
+    width: 200px;
+    left: 2vw;
+    border-radius: 50%;;
+    border: 2px solid black;
+    background-color: rgb(4, 160, 4);
+}
+
+.profile-name {
+    position: relative;
+    font-size: 1vw;
+    font-weight: bold;
+    font-family: "Orbitron", sans-serif;
+    top: -25vh;
+    left:-3vw;
+}
+
+.profile-id {
+    position: relative;
+    font-size: 1vw;
+    font-weight: bold;
+    font-family: "Orbitron", sans-serif;
+    top: -22vh;
+    left: -2vw;
+}
+
+.profile-description {
+    position: relative;
+    width: 22vw;
+    height: 14vh;
+    font-size: 1vw;
+    font-family: "Orbitron", sans-serif;
+    background-color: rgb(4, 160, 4);
+    border: 2px solid black;
+    top: -20vh;
+    left: 6.5vw;
+}
+
+.update-description {
+    position: absolute;
+    top: 27vh;
+    left: 35vw;
+    background-color: rgb(4, 160, 4);
+    font-size: 30px;
+    border: none;
+    outline: none;
+}
+.section-stats {
+    position: relative;
+    top: 15%;
+    left: 10%;
+    width: 80%;
+    height: 30%;
+    background-color: rgb(4, 160, 4);
+    border: 2px solid rgb(4, 244, 4);
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+    z-index: 5;
+}
+
+.section-stats-title {
+    margin-top: 1vh;
+    font-size: 1.5vw;
+    font-weight: bold;
+    border-bottom: 1px solid rgb(4, 244, 4);
+    font-family: "Orbitron", sans-serif;
+}
+
+.number-posts {
+    margin-top: 1vh;
+    font-size: 1vw;
+    font-family: "Orbitron", sans-serif;
+}
+
+.number-likes {
+    margin-top: 1vh;
+    font-size: 1vw;
+    font-family: "Orbitron", sans-serif;
+}
+
+.number-dislikes {
+    margin-top: 1vh;
+    font-size: 1vw;
+    font-family: "Orbitron", sans-serif;
+}
