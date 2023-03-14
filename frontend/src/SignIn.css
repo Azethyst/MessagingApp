@@ -1,0 +1,23 @@
+.content {
+    position: absolute;
+    width: 50vw;
+    height: 70vh;
+    top: 16vh;
+    left: 24vw;
+    background-color: rgb(4, 160, 4);
+    border: 2px solid rgb(4, 244, 4);
+    border-radius: 100px;
+    opacity: 0.6;
+    z-index: 4;
+}
+
+.heading-title {
+    font-size: 2vw;
+    font-family: "Orbitron", sans-serif;
+}
+
+.alien-icon {
+    margin: 0;
+    font-size: 100px;
+}
+

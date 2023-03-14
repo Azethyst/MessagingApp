@@ -12,7 +12,7 @@ const Messaging = () => {
                     Plutionian Colony
                 </button>
                 <button className="group">
-                    Plutionian Colony LLLLLLLLLLLLLL
+                    Plutionian Colony 
                 </button>
                 <button className="group">
                     Plutionian Colony

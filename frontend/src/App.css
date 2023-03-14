@@ -198,3 +198,91 @@
   transition: 0.3s ease;
   color: white;
 }
+
+.signin {
+  position: absolute;
+  width: 6vw;
+  height: 22vh;
+  top: 65vh;
+  left: 12.5vw;
+  background-color: rgb(4, 160, 4);
+  border: 2px solid rgb(4, 244, 4);
+  border-radius: 50px;
+  opacity: 0.6;
+  font-size: 2vw;
+  text-align: center;
+  font-family: "Orbitron", sans-serif;
+  z-index: 5;
+}
+
+.signin:hover {
+  background-color: darkcyan;
+  transition: 0.3s ease;
+  color: white;
+}
+
+.signup {
+  position: absolute;
+  width: 6vw;
+  height: 22vh;
+  top: 65vh;
+  left: 12.5vw;
+  background-color: rgb(4, 160, 4);
+  border: 2px solid rgb(4, 244, 4);
+  border-radius: 50px;
+  opacity: 0.6;
+  font-size: 2vw;
+  text-align: center;
+  font-family: "Orbitron", sans-serif;
+  z-index: 5;
+}
+
+.signup:hover {
+  background-color: darkcyan;
+  transition: 0.3s ease;
+  color: white;
+}
+
+.login {
+  position: absolute;
+  width: 6vw;
+  height: 22vh;
+  top: 15vh;
+  left: 80.5vw;
+  background-color: rgb(4, 160, 4);
+  border: 2px solid rgb(4, 244, 4);
+  border-radius: 50px;
+  opacity: 0.6;
+  font-size: 2.3vw;
+  font-family: "Orbitron", sans-serif;
+  text-align: center;
+  z-index: 5;
+}
+
+.login:hover {
+  background-color: darkcyan;
+  transition: 0.3s ease;
+  color: white;
+}
+
+.create-account {
+  position: absolute;
+  width: 6vw;
+  height: 22vh;
+  top: 15vh;
+  left: 80.5vw;
+  background-color: rgb(4, 160, 4);
+  border: 2px solid rgb(4, 244, 4);
+  border-radius: 50px;
+  opacity: 0.6;
+  font-size: 1vw;
+  font-family: "Orbitron", sans-serif;
+  text-align: center;
+  z-index: 5;
+}
+
+.create-account:hover {
+  background-color: darkcyan;
+  transition: 0.3s ease;
+  color: white;
+}

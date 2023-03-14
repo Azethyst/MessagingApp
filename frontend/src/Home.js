@@ -13,14 +13,11 @@ const Home = () => {
         </div>
         <div className="profile-name">Name: </div>
         <div className="profile-id">Profile-ID: </div>
-        <textarea
+        <input
           name=""
-          id=""
-          cols="30"
-          rows="10"
           className="profile-description"
           placeholder="About Me..."
-        ></textarea>
+        />
         <button className="update-description">
           <FiUpload />
         </button>
