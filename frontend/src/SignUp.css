@@ -1,23 +1,65 @@
 .content {
-    position: absolute;
-    width: 50vw;
-    height: 70vh;
-    top: 16vh;
-    left: 24vw;
-    background-color: rgb(4, 160, 4);
-    border: 2px solid rgb(4, 244, 4);
-    border-radius: 100px;
-    opacity: 0.6;
-    z-index: 4;
+  position: absolute;
+  width: 50vw;
+  height: 70vh;
+  top: 16vh;
+  left: 24vw;
+  background-color: rgb(4, 160, 4);
+  border: 2px solid rgb(4, 244, 4);
+  border-radius: 100px;
+  opacity: 0.6;
+  z-index: 4;
 }
 
 .heading-title {
-    font-size: 2vw;
-    font-family: "Orbitron", sans-serif;
+  font-size: 2vw;
+  font-family: "Orbitron", sans-serif;
+}
+
+.box {
+  position: relative;
+  height: 50%;
+  border: 8px solid black;
+  border-radius: 70px;
+  width: 70%;
+  top: 10%;
+  left: 15%;
 }
 
 .alien-icon {
-    margin: 0;
-    font-size: 100px;
+  position: relative;
+  margin: 0;
+  font-size: 12vh;
+  top: -6.5vh;
+  border-radius: 50px;
+  border: 2px solid black;
+  background-image: linear-gradient(to right, green, pink, yellow);
+  z-index: 5;
 }
 
+.sign-up-form {
+  margin-top: 0;
+  padding-top: 2vh;
+  margin-bottom: 2vh;
+  height: 8vh;
+}
+
+.sign-up-input-box {
+  position: relative;
+  height: 55%;
+  width: 60%;
+  margin-left: 2vw;
+  top: -2.7vh;
+  padding: 15px;
+  background-color: rgb(4, 160, 4);
+  font-size: 1.5vw;
+  border-radius: 50px;
+  border: 5px solid black;
+}
+
+.form-icon {
+  font-size: 4vw;
+  background-image: linear-gradient(to right, green, pink, yellow);
+  border: 2px solid black;
+  border-radius: 50px;
+}
