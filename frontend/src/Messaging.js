@@ -1,7 +1,35 @@
 import "./Messaging.css";
 import { FiSearch, FiSend } from "react-icons/fi";
+import { BsArrowReturnLeft } from "react-icons/bs";
 
-const Messaging = () => {
+const Messaging = (getPostMode, setPostMode, getRefresh, setRefresh) => {
+    let display;
+    if (getRefresh) {
+        if (getPostMode) {
+            display = <div>
+                        <div className="message-box">
+                            <div className="user-icon"></div>
+                            <button className="user-message" onClick={(e) => {setPostMode(false); setRefresh(true);}}>Pears are purple here, help!</button>
+                        </div>
+                        <div className="message-box">
+                            <div className="user-icon"></div>
+                            <button className="user-message" onClick={(e) => {setPostMode(false); setRefresh(true);}}>Eyy yo, I just evolved netherite eyes</button>
+                        </div>
+                        <div className="message-box">
+                            <div className="user-icon"></div>
+                            <button className="user-message" onClick={(e) => {setPostMode(false); setRefresh(true);}}>Damn, when will skip the dishes extend their range to martian soil?</button>
+                        </div>
+                    </div>;
+        } else {
+            display = <div>                
+                        <button className="return-button" onClick={(e) => {setPostMode(true); setRefresh(true);}}>
+                            <BsArrowReturnLeft />
+                        </button>
+                    </div>;
+        }
+        setRefresh(false);
+    }
+    
   return (
     <div>
         <div className="planets-front">
@@ -12,19 +40,13 @@ const Messaging = () => {
                     Plutionian Colony
                 </button>
                 <button className="group">
-                    Plutionian Colony 
+                    Martian Dessert
                 </button>
                 <button className="group">
-                    Plutionian Colony
+                    Elon Fans
                 </button>
                 <button className="group">
-                    Plutionian Colony
-                </button>
-                <button className="group">
-                    Plutionian Colony
-                </button>
-                <button className="group">
-                    Plutionian Colony
+                    Source:Trust me..
                 </button>
             </div>
             <div className="planet-screen-back"></div>
@@ -49,23 +71,7 @@ const Messaging = () => {
                 </button>
             </div>
             <div className="messages">
-                {/* This is where all the messages are posted */}
-                <div className="message-box">
-                    <div className="user-icon"></div>
-                    <div className="user-message">HELLO LOSERS</div>
-                </div>
-                <div className="message-box">
-                    <div className="user-icon"></div>
-                    <div className="user-message">ITS TIME TO DU DU DU DUEL!!!</div>
-                </div>
-                <div className="message-box">
-                    <div className="self-message">IT'S ON!</div>
-                    <div className="self-icon"></div>
-                </div>
-                <div className="message-box">
-                    <div className="self-message">LOSER I SUMMON YOUUUU!!!</div>
-                    <div className="self-icon"></div>
-                </div>
+                {display}
             </div>
             <div className="message-footer">
                 <input type="text" placeholder="Message" className="post-message"/>

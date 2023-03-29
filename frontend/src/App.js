@@ -15,6 +15,10 @@ function App() {
   const [inSignUp, setSignUp] = useState(false);
   const [inApp, setApp] = useState(false);  
 
+  const [getID, setID] = useState("");
+  const [isPostMode, setPostMode] = useState(true);
+  const [getChannel, setChannel] = useState("");
+  const [getRefresh, setRefresh] = useState(true);
 
   return (
     <div className="App">
@@ -74,7 +78,7 @@ function App() {
               <Route path="/signup" element={<SignUp />}/>
               <Route path="/landing" element={<Landing />}/>
               <Route path="/home" element={<Home />} />
-              <Route path="/messaging" element={<Messaging />} />
+              <Route path="/messaging" element={<Messaging getPostMode={isPostMode} setPostMode={setPostMode} getRefresh={getRefresh} setRefresh={setRefresh}/>} />
             </Routes>
           </Router>
         </div>
