@@ -31,27 +31,39 @@ app.use(cors());
 /* initializes the MYSQL database and returns the html file */
 app.get("/init", (req, res) => {
   connection.query(
-    `CREATE DATABASE IF NOT EXISTS postdb`,
+    `CREATE DATABASE IF NOT EXISTS project`,
     function (error, result) {
       if (error) console.log(error);
     }
   );
 
-  connection.query(`USE postdb`, function (error, result) {
+  connection.query(`USE project`, function (error, result) {
     if (error) console.log(error);
   });
 
-  connection.query(`DROP TABLE IF EXISTS posts`, function (error, result) {
-    if (error) console.log(error);
-  });
+  // * NOTES
+  /* 
+    USER TABLE:
+    each user contains - id, name, userId, password, numPosts, numLikes, numDislikes, numReplies
+    CHANNEL TABLE:
+    each channel contains - id, channelName, {maybe members? idk}
+    POST TABLE:
+    each post contains - id, topic, data, channelID, userID, thumbsUp, thumbsDown
+    REPLY TABLE: 
+    each reply contains - id, postId, comment, replies{}, thumbsUp, thumbsDown
+
+    TO IMPLEMENT NOTES:
+    - added search mehanisms for users and their data
+    - admin mode only accessible screen (user = admin, pass = admin)
+  */
 
   connection.query(
     `CREATE TABLE posts
-  (id int unsigned NOT NULL auto_increment,
-   topic varchar(15000) NOT NULL,
-   data varchar(15000) NOT NULL,
-   PRIMARY KEY (id)
-  )`,
+    (id int unsigned NOT NULL auto_increment,
+    topic varchar(15000) NOT NULL,
+    data varchar(15000) NOT NULL,
+    PRIMARY KEY (id)
+    )`,
     function (error, result) {
       if (error) console.log(error);
     }
