@@ -17,7 +17,7 @@ import SignIn from "./SignIn";
 function App() {
   const navigate = useNavigate();
 
-  // Initialize & Reload
+  //Initialize & Reload
   const [getInit, setInit] = useState(true);
 
   if (getInit) {
@@ -100,7 +100,7 @@ function App() {
                   )
                   .then((obj) => {
                     console.log(obj.body);
-                    if (obj.status != 200) {
+                    if (obj.status !== 200) {
                       alert("Error: Incorrect Username or Password.");
                     } else {
                       setUsername(obj.body.name);
@@ -149,7 +149,7 @@ function App() {
                   },
                 })
                   .then((response) => {
-                    if (response.status != 200) {
+                    if (response.status !== 200) {
                       alert(
                         `Error: Invalid Data Sent , or Account already exists.`
                       );
@@ -223,7 +223,19 @@ function App() {
               }
             />
             <Route path="/landing" element={<Landing />} />
-            <Route path="/home" element={<Home />} />
+            <Route
+              path="/home"
+              element={
+                <Home
+                  getUsername={getUsername}
+                  getUserId={getUserId}
+                  getNumPosts={getNumPosts}
+                  getNumLikes={getNumLikes}
+                  getNumDislikes={getNumDislikes}
+                  getNumReplies={getNumReplies}
+                />
+              }
+            />
             <Route
               path="/messaging"
               element={

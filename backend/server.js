@@ -77,12 +77,10 @@ app.get("/init", (req, res) => {
   );
 
   // Initialize an administrator account for advanced modification
-  var query = `INSERT IGNORE INTO users (name, userId, password) VALUES ('administrator', 'admin', 'admin' )`;
+  var query = `INSERT IGNORE INTO users (name, userId, password) VALUES ('Administrator', 'admin', 'admin' )`;
   connection.query(query, function (error, result) {
     if (error) console.log(error);
   });
-
-  // console.log("Initialized Tables and Assets...");
 });
 
 /* Login */

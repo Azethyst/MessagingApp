@@ -34,8 +34,8 @@
 
 .profile-icon {
   position: relative;
-  height: 200px;
-  width: 200px;
+  height: 12vw;
+  width: 12vw;
   left: 2vw;
   border-radius: 50%;
   border: 2px solid black;
@@ -44,11 +44,12 @@
 
 .update-profile-icon {
   position: absolute;
-  height: 50px;
-  width: 50px;
+  height: 3vw;
+  width: 3vw;
   bottom: 0;
   left: 0;
-  font-size: 40px;
+  font-size: 2vw;
+  padding-top: 0.4vw;
   background-color: rgb(4, 160, 4);
   border: 2px solid black;
   border-radius: 50%;
@@ -62,20 +63,20 @@
 
 .profile-name {
   position: relative;
-  font-size: 1vw;
+  font-size: 1.2vw;
   font-weight: bold;
   font-family: "Orbitron", sans-serif;
-  top: -23vh;
-  left: -3vw;
+  top: -17vh;
+  left: 5vw;
 }
 
 .profile-id {
   position: relative;
-  font-size: 1vw;
+  font-size: 1.2vw;
   font-weight: bold;
   font-family: "Orbitron", sans-serif;
-  top: -21vh;
-  left: -2vw;
+  top: -15vh;
+  left: 3.6vw;
 }
 
 .profile-description {
@@ -134,6 +135,12 @@
 }
 
 .number-dislikes {
+  margin-top: 1vh;
+  font-size: 1vw;
+  font-family: "Orbitron", sans-serif;
+}
+
+.number-replies {
   margin-top: 1vh;
   font-size: 1vw;
   font-family: "Orbitron", sans-serif;
