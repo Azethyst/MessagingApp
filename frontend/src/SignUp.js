@@ -2,7 +2,14 @@ import "./SignUp.css";
 import { RiAliensFill } from "react-icons/ri";
 import { FiUser, FiLock } from "react-icons/fi";
 
-const SignUp = () => {
+const SignUp = ({
+  signName,
+  setSignName,
+  signId,
+  setSignId,
+  signPassword,
+  setSignPassword,
+}) => {
   return (
     <div>
       <div className="content">
@@ -15,6 +22,8 @@ const SignUp = () => {
               type="text"
               placeholder="Name"
               className="sign-up-input-box"
+              value={signName}
+              onChange={(e) => setSignName(e.target.value)}
             />
           </div>
           <div className="sign-up-form">
@@ -23,14 +32,18 @@ const SignUp = () => {
               type="text"
               placeholder="Profile ID"
               className="sign-up-input-box"
+              value={signId}
+              onChange={(e) => setSignId(e.target.value)}
             />
           </div>
           <div className="sign-up-form">
             <FiLock className="form-icon" />
             <input
-              type="text"
+              type="password"
               placeholder="Password"
               className="sign-up-input-box"
+              value={signPassword}
+              onChange={(e) => setSignPassword(e.target.value)}
             />
           </div>
         </div>

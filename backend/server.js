@@ -1,5 +1,5 @@
 "use strict";
-
+console.log("Initializing Server...");
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -15,6 +15,7 @@ var mysql = require("mysql");
 
 // connect to database
 try {
+  console.log("Connecting to MySQL Database...");
   var connection = mysql.createConnection({
     host: "database",
     user: "root",
@@ -57,54 +58,124 @@ app.get("/init", (req, res) => {
     - admin mode only accessible screen (user = admin, pass = admin)
   */
 
+  // initialize the table for the User Accounts
   connection.query(
-    `CREATE TABLE posts
+    `CREATE TABLE IF NOT EXISTS users
     (id int unsigned NOT NULL auto_increment,
-    topic varchar(15000) NOT NULL,
-    data varchar(15000) NOT NULL,
+    name varchar(1000) NOT NULL,
+    userId varchar(1000) NOT NULL,
+    password varchar(1000) NOT NULL,
+    numPosts int unsigned NOT NULL,
+    numLikes int unsigned NOT NULL,
+    numDislikes int unsigned NOT NULL,
+    numReplies int unsigned NOT NULL,
     PRIMARY KEY (id)
     )`,
     function (error, result) {
       if (error) console.log(error);
     }
   );
+
+  // Initialize an administrator account for advanced modification
+  var query = `INSERT IGNORE INTO users (name, userId, password) VALUES ('administrator', 'admin', 'admin' )`;
+  connection.query(query, function (error, result) {
+    if (error) console.log(error);
+  });
+
+  // console.log("Initialized Tables and Assets...");
 });
 
-/*  The post request that updates the posts on
-    the site from the button click */
-app.post("/addPost", (req, res) => {
-  var topic = req.body.topic;
-  var message = req.body.data;
+/* Login */
+app.post("/login", (req, res) => {
+  var userId = req.body.userId;
+  var password = req.body.password;
 
-  if (!(topic == "" || message == "")) {
-    var info = { topic: topic, data: message };
-    var query = `INSERT INTO posts (topic, data) VALUES ('${topic}', '${message}')`;
+  connection.query(`SELECT * FROM users`, function (err, result, fields) {
+    if (err) throw err;
+    for (var i = 0; i < result.length; i++) {
+      if (
+        (result[i]["userId"] == userId) &
+        (result[i]["password"] == password)
+      ) {
+        var user = {
+          id: result[i]["id"],
+          name: result[i]["name"],
+          userId: result[i]["userId"],
+          password: result[i]["password"],
+          numPosts: result[i]["numPosts"],
+          numLikes: result[i]["numLikes"],
+          numDislikes: result[i]["numDislikes"],
+          numReplies: result[i]["numReplies"],
+        };
+        res.json(user);
+        console.log("Login Successful.");
+        return;
+      }
+    }
+    res.status(404).json("Incorrect Username or Password.");
+  });
+});
+
+/* Sign Up */
+app.post("/signup", (req, res) => {
+  var name = req.body.name;
+  var userId = req.body.userId;
+  var password = req.body.password;
+
+  if (!(name == "" || userId == "" || password == "")) {
+    // Check if UserID and Name already exists
+    connection.query(`SELECT * FROM users`, function (err, result, fields) {
+      if (err) throw err;
+      for (var i = 0; i < result.length; i++) {
+        if ((result[i]["userId"] == userId) & (result[i]["name"] == name)) {
+          res.status(404);
+          return;
+        }
+      }
+    });
+
+    var query = `INSERT IGNORE INTO users (name, userId, password) VALUES ('${name}', '${userId}', '${password}')`;
 
     connection.query(query, function (error, result) {
       if (error) console.log(error);
-      else res.json(info);
+      else {
+        res.status(200);
+        console.log("Account Successfully Created...");
+        return;
+      }
     });
   }
+  res.status(404);
+  return;
 });
 
-app.get("/getPost", (req, res) => {
-  var postList = [];
-  //Select all posts and read each of the items:
-  connection.query(`SELECT * FROM posts`, function (err, result, fields) {
-    if (err) throw err;
-    for (var i = 0; i < result.length; i++) {
-      postList.push({
-        id: result[i]["id"],
-        topic: result[i]["topic"],
-        data: result[i]["data"],
-      });
-    }
-    res.json(postList);
-  });
-});
+// app.get("/getPost", (req, res) => {
+//   var postList = [];
+//   //Select all posts and read each of the items:
+//   connection.query(`SELECT * FROM posts`, function (err, result, fields) {
+//     if (err) throw err;
+//     for (var i = 0; i < result.length; i++) {
+//       postList.push({
+//         id: result[i]["id"],
+//         topic: result[i]["topic"],
+//         data: result[i]["data"],
+//       });
+//     }
+//     res.json(postList);
+//   });
+// if (!(topic == "" || message == "")) {
+//     var info = { topic: topic, data: message };
+//     var query = `INSERT INTO posts (topic, data) VALUES ('${topic}', '${message}')`;
+
+//     connection.query(query, function (error, result) {
+//       if (error) console.log(error);
+//       else res.json(info);
+//     });
+//   }
+// });
 
 app.use("/", express.static("."));
 
 app.listen(PORT, HOST);
 
-console.log("up and running");
+console.log("System Active...");
