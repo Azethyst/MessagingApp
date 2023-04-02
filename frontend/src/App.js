@@ -1,7 +1,7 @@
 import "./App.css";
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import { FiMessageSquare, FiHome } from "react-icons/fi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Home from "./Home";
 import Messaging from "./Messaging";
 import Landing from "./Landing";
@@ -10,6 +10,21 @@ import SignIn from "./SignIn";
 
 function App() {
   const navigate = useNavigate();
+
+  // Handle the case where the refresh button is clicked in the browser
+  useEffect(() => {
+    const handleUnload = (e) => {
+      e.preventDefault();
+      console.log("Redirecting to Sign In Page.");
+      window.location.href = "/";
+    };
+
+    window.addEventListener("unload", handleUnload);
+
+    return () => {
+      window.removeEventListener("unload", handleUnload);
+    };
+  }, []);
 
   //Initialize & Reload
   const [getInit, setInit] = useState(true);

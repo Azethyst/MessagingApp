@@ -1,5 +1,6 @@
 import "./Messaging.css";
 import { FiSearch, FiSend } from "react-icons/fi";
+import { BiDislike, BiLike } from "react-icons/bi";
 import { useState } from "react";
 
 const Messaging = ({ getChannels, setChannels }) => {
@@ -83,24 +84,56 @@ const Messaging = ({ getChannels, setChannels }) => {
         </div>
         <div className="messages">
           <div>
+            {/* This is where the posts will be mapped */}
             <div className="message-box">
               <div className="user-icon"></div>
               <button className="user-message" onClick={(e) => {}}>
-                Pears are purple here, help!
+                <h1>Help with food supply.</h1>
+                <p>Pears are purple here, help!</p>
               </button>
+              <div className="emotes">
+                <button className="emote-button">
+                  <BiLike /> 12
+                </button>
+                <button className="emote-button">
+                  <BiDislike /> 235
+                </button>
+              </div>
             </div>
+
             <div className="message-box">
               <div className="user-icon"></div>
               <button className="user-message" onClick={(e) => {}}>
-                Eyy yo, I just evolved netherite eyes
+                <h1>Dope.</h1>
+                <p>Eyy yo, I just evolved netherite eyes...</p>
               </button>
+              <div className="emotes">
+                <button className="emote-button">
+                  <BiLike /> 12
+                </button>
+                <button className="emote-button">
+                  <BiDislike /> 235
+                </button>
+              </div>
             </div>
+
             <div className="message-box">
               <div className="user-icon"></div>
               <button className="user-message" onClick={(e) => {}}>
-                Damn, when will skip the dishes extend their range to martian
-                soil?
+                <h1>Elon FTW.</h1>
+                <p>
+                  Damn, when will skip the dishes extend their range to martian
+                  soil?
+                </p>
               </button>
+              <div className="emotes">
+                <button className="emote-button">
+                  <BiLike /> 12
+                </button>
+                <button className="emote-button">
+                  <BiDislike /> 235
+                </button>
+              </div>
             </div>
           </div>
         </div>
