@@ -1,11 +1,5 @@
 import "./App.css";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-  useNavigate,
-} from "react-router-dom";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import { FiMessageSquare, FiHome } from "react-icons/fi";
 import { useState } from "react";
 import Home from "./Home";
@@ -44,10 +38,13 @@ function App() {
   const [getNumDislikes, setNumDislikes] = useState(0);
   const [getNumReplies, setNumReplies] = useState(0);
 
-  const [getID, setID] = useState("");
-  const [isPostMode, setPostMode] = useState(true);
-  const [getChannel, setChannel] = useState("");
-  const [getRefresh, setRefresh] = useState(true);
+  // Channels
+  const [getChannels, setChannels] = useState([]);
+
+  // const [getID, setID] = useState("");
+  // const [isPostMode, setPostMode] = useState(true);
+  // const [getChannel, setChannel] = useState("");
+  // const [getRefresh, setRefresh] = useState(true);
 
   return (
     <div className="App">
@@ -186,6 +183,11 @@ function App() {
               <button
                 className="toMessaging"
                 onClick={() => {
+                  fetch("http://localhost:8080/channel")
+                    .then((response) => response.json())
+                    .then((response) => setChannels(response))
+                    .catch((err) => alert(`Error Login: ${err}`));
+                  // also fetch the post contents of this channel
                   setSignUp(false);
                   setSignIn(false);
                   setApp(true);
@@ -240,10 +242,8 @@ function App() {
               path="/messaging"
               element={
                 <Messaging
-                  getPostMode={isPostMode}
-                  setPostMode={setPostMode}
-                  getRefresh={getRefresh}
-                  setRefresh={setRefresh}
+                  getChannels={getChannels}
+                  setChannels={setChannels}
                 />
               }
             />

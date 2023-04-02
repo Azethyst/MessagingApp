@@ -47,7 +47,7 @@ app.get("/init", (req, res) => {
     USER TABLE:
     each user contains - id, name, userId, password, numPosts, numLikes, numDislikes, numReplies
     CHANNEL TABLE:
-    each channel contains - id, channelName, {maybe members? idk}
+    each channel contains - id, channelName, description{maybe members? idk}
     POST TABLE:
     each post contains - id, topic, data, channelID, userID, thumbsUp, thumbsDown
     REPLY TABLE: 
@@ -81,6 +81,19 @@ app.get("/init", (req, res) => {
   connection.query(query, function (error, result) {
     if (error) console.log(error);
   });
+
+  // initialize the table for the Channels in the Server
+  connection.query(
+    `CREATE TABLE IF NOT EXISTS channels
+    (id int unsigned NOT NULL auto_increment,
+    channelName varchar(1000) NOT NULL,
+    description varchar(3000) NOT NULL,
+    PRIMARY KEY (id)
+    )`,
+    function (error, result) {
+      if (error) console.log(error);
+    }
+  );
 });
 
 /* Login */
@@ -147,30 +160,38 @@ app.post("/signup", (req, res) => {
   return;
 });
 
-// app.get("/getPost", (req, res) => {
-//   var postList = [];
-//   //Select all posts and read each of the items:
-//   connection.query(`SELECT * FROM posts`, function (err, result, fields) {
-//     if (err) throw err;
-//     for (var i = 0; i < result.length; i++) {
-//       postList.push({
-//         id: result[i]["id"],
-//         topic: result[i]["topic"],
-//         data: result[i]["data"],
-//       });
-//     }
-//     res.json(postList);
-//   });
-// if (!(topic == "" || message == "")) {
-//     var info = { topic: topic, data: message };
-//     var query = `INSERT INTO posts (topic, data) VALUES ('${topic}', '${message}')`;
+/* Channel */
+app
+  .route("/channel")
+  .post((req, res) => {
+    var channelName = req.body.channelName;
+    var description = req.body.description;
 
-//     connection.query(query, function (error, result) {
-//       if (error) console.log(error);
-//       else res.json(info);
-//     });
-//   }
-// });
+    if (!(channelName == "" || description == "")) {
+      var query = `INSERT INTO channels (channelName, description) VALUES ('${channelName}', '${description}')`;
+
+      connection.query(query, function (error, result) {
+        if (error) console.log(error);
+        else res.status(200);
+        return;
+      });
+    }
+    res.status(404);
+  })
+  .get((req, res) => {
+    var channelList = [];
+    connection.query(`SELECT * FROM channels`, function (err, result, fields) {
+      if (err) throw err;
+      for (var i = 0; i < result.length; i++) {
+        channelList.push({
+          id: result[i]["id"],
+          channelName: result[i]["channelName"],
+          description: result[i]["description"],
+        });
+      }
+      res.json(channelList);
+    });
+  });
 
 app.use("/", express.static("."));
 
