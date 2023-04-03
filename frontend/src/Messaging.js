@@ -2,10 +2,49 @@ import "./Messaging.css";
 import { FiSearch, FiSend } from "react-icons/fi";
 import { BiDislike, BiLike } from "react-icons/bi";
 import { useState } from "react";
+// import { useEffect } from "react";
 
-const Messaging = ({ getChannels, setChannels }) => {
+const Messaging = ({
+  getChannels,
+  setChannels,
+  selectedChannelId,
+  selectedChannelName,
+  selectedChannelDescription,
+  setSelectedChannelId,
+  setSelectedChannelName,
+  setSelectedChannelDescription,
+  getPosts,
+  setPosts,
+  getUserId,
+}) => {
   const [getChannelName, setChannelName] = useState("");
   const [getChannelDescription, setChannelDescription] = useState("");
+
+  const [getCurrentTopic, setCurrentTopic] = useState("");
+  const [getCurrentData, setCurrentData] = useState("");
+
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     fetch(`http://localhost:8080/post/${selectedChannelId}`, {
+  //       method: "POST",
+  //       body: ``,
+  //       headers: {
+  //         "Content-type": "application/x-www-form-urlencoded",
+  //       },
+  //     })
+  //       .then((response) => response.json())
+  //       .then((response) => {
+  //         if (!response.ok) {
+  //           setPosts([]);
+  //         } else {
+  //           setPosts(response);
+  //         }
+  //       })
+  //       .catch((error) => console.error(error));
+  //   }, 5000);
+
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   return (
     <div>
@@ -14,7 +53,31 @@ const Messaging = ({ getChannels, setChannels }) => {
         <div className="planet-screen-front">
           <>
             {getChannels.map((channel) => (
-              <button className="group" title={channel.description}>
+              <button
+                className="group"
+                title={channel.description}
+                onClick={() => {
+                  fetch(`http://localhost:8080/post/${channel.id}`, {
+                    method: "POST",
+                    body: ``,
+                    headers: {
+                      "Content-type": "application/x-www-form-urlencoded",
+                    },
+                  })
+                    .then((response) => response.json())
+                    .then((response) => {
+                      if (!response.ok) {
+                        setPosts([]);
+                      } else {
+                        setPosts(response);
+                      }
+                    })
+                    .catch((error) => console.error(error));
+                  setSelectedChannelId(channel.id);
+                  setSelectedChannelName(channel.channelName);
+                  setSelectedChannelDescription(channel.description);
+                }}
+              >
                 {channel.channelName}
               </button>
             ))}
@@ -60,7 +123,7 @@ const Messaging = ({ getChannels, setChannels }) => {
                     .then((response) => response.json())
                     .then((response) => setChannels(response))
                 )
-                .catch((err) => alert(`Error Login: ${err}`));
+                .catch((err) => alert(`Error Create: ${err}`));
 
               setChannelName("");
               setChannelDescription("");
@@ -74,8 +137,8 @@ const Messaging = ({ getChannels, setChannels }) => {
       <div className="add-planets-back"></div>
       <div className="content">
         <div className="message-header">
-          <div className="chat-title" title="WOW">
-            Plutonian Colony
+          <div className="chat-title" title={selectedChannelDescription}>
+            <>{selectedChannelName}</>
           </div>
           <input type="text" placeholder="Search" className="search-message" />
           <button className="submit-search">
@@ -85,61 +148,83 @@ const Messaging = ({ getChannels, setChannels }) => {
         <div className="messages">
           <div>
             {/* This is where the posts will be mapped */}
-            <div className="message-box">
-              <div className="user-icon"></div>
-              <button className="user-message" onClick={(e) => {}}>
-                <h1>Help with food supply.</h1>
-                <p>Pears are purple here, help!</p>
-              </button>
-              <div className="emotes">
-                <button className="emote-button">
-                  <BiLike /> 12
-                </button>
-                <button className="emote-button">
-                  <BiDislike /> 235
-                </button>
-              </div>
-            </div>
-
-            <div className="message-box">
-              <div className="user-icon"></div>
-              <button className="user-message" onClick={(e) => {}}>
-                <h1>Dope.</h1>
-                <p>Eyy yo, I just evolved netherite eyes...</p>
-              </button>
-              <div className="emotes">
-                <button className="emote-button">
-                  <BiLike /> 12
-                </button>
-                <button className="emote-button">
-                  <BiDislike /> 235
-                </button>
-              </div>
-            </div>
-
-            <div className="message-box">
-              <div className="user-icon"></div>
-              <button className="user-message" onClick={(e) => {}}>
-                <h1>Elon FTW.</h1>
-                <p>
-                  Damn, when will skip the dishes extend their range to martian
-                  soil?
-                </p>
-              </button>
-              <div className="emotes">
-                <button className="emote-button">
-                  <BiLike /> 12
-                </button>
-                <button className="emote-button">
-                  <BiDislike /> 235
-                </button>
-              </div>
-            </div>
+            {/* ADD FETCH TO FETCH FROM THE GIVEN CHANNEL ID FROM THE TOP */}
+            <>
+              {getPosts.map((post) => (
+                <div className="message-box">
+                  <div className="user-icon">{post.userId}</div>
+                  <button className="user-message" onClick={(e) => {}}>
+                    <h1>{post.topic}</h1>
+                    <p>{post.data}</p>
+                  </button>
+                  <div className="emotes">
+                    <button className="emote-button">
+                      <BiLike /> {post.thumbsUp}
+                    </button>
+                    <button className="emote-button">
+                      <BiDislike /> {post.thumbsDown}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </>
           </div>
         </div>
         <div className="message-footer">
-          <input type="text" placeholder="Message" className="post-message" />
-          <button className="submit-message">
+          <input
+            type="text"
+            placeholder="Topic"
+            className="post-topic"
+            value={getCurrentTopic}
+            onChange={(e) => setCurrentTopic(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Message"
+            className="post-message"
+            value={getCurrentData}
+            onChange={(e) => setCurrentData(e.target.value)}
+          />
+          <button
+            className="submit-message"
+            onClick={(e) => {
+              fetch("http://localhost:8080/postMessage", {
+                method: "POST",
+                body: `topic=${getCurrentTopic}&data=${getCurrentData}&userId=${getUserId}&channelId=${selectedChannelId}`,
+                headers: {
+                  "Content-type": "application/x-www-form-urlencoded",
+                },
+              })
+                .then((response) => {
+                  if (!response.ok) {
+                    alert("Error: Message was not Sent.");
+                  } else {
+                    alert("Post Sent!");
+                  }
+                })
+                .then(() => {
+                  fetch(`http://localhost:8080/post/${selectedChannelId}`, {
+                    method: "POST",
+                    body: ``,
+                    headers: {
+                      "Content-type": "application/x-www-form-urlencoded",
+                    },
+                  })
+                    .then((response) => response.json())
+                    .then((response) => {
+                      if (!response.ok) {
+                        setPosts([]);
+                      } else {
+                        setPosts(response);
+                      }
+                    })
+                    .catch((error) => console.error(error));
+                  setCurrentTopic("");
+                  setCurrentData("");
+                })
+                .catch((err) => alert(`Error Post: ${err}`));
+            }}
+          >
             <FiSend />
           </button>
         </div>

@@ -265,11 +265,11 @@
   z-index: 5;
 }
 
-.post-message {
+.post-topic {
   position: absolute;
   top: 2vh;
   left: 5vw;
-  width: 34vw;
+  width: 12vw;
   height: 6vh;
   padding-left: 1vw;
   font-size: 0.8vw;
@@ -280,6 +280,21 @@
   border: 2px solid black;
   border-bottom-left-radius: 100px;
   border-top-left-radius: 100px;
+}
+
+.post-message {
+  position: absolute;
+  top: 2vh;
+  left: 17vw;
+  width: 22vw;
+  height: 6vh;
+  padding-left: 1vw;
+  font-size: 0.8vw;
+  font-family: "Orbitron", sans-serif;
+  color: black;
+  outline: none;
+  background-color: rgb(4, 160, 4);
+  border: 2px solid black;
 }
 
 .submit-message {

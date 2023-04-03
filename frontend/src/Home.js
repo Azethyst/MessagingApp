@@ -34,7 +34,7 @@ const Home = ({
         <div className="number-posts">Number of Posts: {getNumPosts}</div>
         <div className="number-likes">Number of Likes: {getNumLikes}</div>
         <div className="number-dislikes">
-          NUmber of Dislikes: {getNumDislikes}
+          Number of Dislikes: {getNumDislikes}
         </div>
         <div className="number-replies">Number of Replies: {getNumReplies}</div>
       </div>

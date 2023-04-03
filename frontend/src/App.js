@@ -1,7 +1,8 @@
 import "./App.css";
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import { FiMessageSquare, FiHome } from "react-icons/fi";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+// import { useEffect } from "react";
 import Home from "./Home";
 import Messaging from "./Messaging";
 import Landing from "./Landing";
@@ -12,27 +13,19 @@ function App() {
   const navigate = useNavigate();
 
   // Handle the case where the refresh button is clicked in the browser
-  useEffect(() => {
-    const handleUnload = (e) => {
-      e.preventDefault();
-      console.log("Redirecting to Sign In Page.");
-      window.location.href = "/";
-    };
+  // useEffect(() => {
+  //   const handleUnload = (e) => {
+  //     e.preventDefault();
+  //     console.log("Redirecting to Sign In Page.");
+  //     window.location.href = "/";
+  //   };
 
-    window.addEventListener("unload", handleUnload);
+  //   window.addEventListener("unload", handleUnload);
 
-    return () => {
-      window.removeEventListener("unload", handleUnload);
-    };
-  }, []);
-
-  //Initialize & Reload
-  const [getInit, setInit] = useState(true);
-
-  if (getInit) {
-    fetch("http://localhost:8080/init");
-    setInit(false);
-  }
+  //   return () => {
+  //     window.removeEventListener("unload", handleUnload);
+  //   };
+  // }, []);
 
   // UI button Visibility Controls
   const [inSignIn, setSignIn] = useState(true);
@@ -53,8 +46,17 @@ function App() {
   const [getNumDislikes, setNumDislikes] = useState(0);
   const [getNumReplies, setNumReplies] = useState(0);
 
-  // Channels
+  // Channel Controls
   const [getChannels, setChannels] = useState([]);
+  const [selectedChannelId, setSelectedChannelId] = useState(99999);
+  const [selectedChannelName, setSelectedChannelName] =
+    useState("Select Channel");
+  const [selectedChannelDescription, setSelectedChannelDescription] = useState(
+    "Please select a Channel to start Post Messages"
+  );
+
+  // Post Controls
+  const [getPosts, setPosts] = useState([]);
 
   // const [getID, setID] = useState("");
   // const [isPostMode, setPostMode] = useState(true);
@@ -111,7 +113,6 @@ function App() {
                     }))
                   )
                   .then((obj) => {
-                    console.log(obj.body);
                     if (obj.status !== 200) {
                       alert("Error: Incorrect Username or Password.");
                     } else {
@@ -200,7 +201,14 @@ function App() {
                 onClick={() => {
                   fetch("http://localhost:8080/channel")
                     .then((response) => response.json())
-                    .then((response) => setChannels(response))
+                    .then((response) => {
+                      setChannels(response);
+                      if (response.length !== 0) {
+                        setSelectedChannelId(response[0].id);
+                        setSelectedChannelName(response[0].channelName);
+                        setSelectedChannelDescription(response[0].description);
+                      }
+                    })
                     .catch((err) => alert(`Error Login: ${err}`));
                   // also fetch the post contents of this channel
                   setSignUp(false);
@@ -259,6 +267,15 @@ function App() {
                 <Messaging
                   getChannels={getChannels}
                   setChannels={setChannels}
+                  selectedChannelId={selectedChannelId}
+                  selectedChannelName={selectedChannelName}
+                  selectedChannelDescription={selectedChannelDescription}
+                  setSelectedChannelId={setSelectedChannelId}
+                  setSelectedChannelName={setSelectedChannelName}
+                  setSelectedChannelDescription={setSelectedChannelDescription}
+                  getPosts={getPosts}
+                  setPosts={setPosts}
+                  getUserId={getUserId}
                 />
               }
             />
