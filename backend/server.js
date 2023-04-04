@@ -206,7 +206,7 @@ app.post("/login", (req, res) => {
         numReplies: result[0]["numReplies"],
       };
       res.json(user);
-      console.log("Login Successful.");
+      console.log("Acquired User Stats.");
       return;
     }
   );
@@ -252,7 +252,7 @@ app.post("/signup", (req, res) => {
   }
 });
 
-/* Post */
+/* Post Methods */
 app.post("/postMessage", async (req, res) => {
   var userId = req.body.userId;
   var channelName = req.body.channelName;
@@ -268,6 +268,14 @@ app.post("/postMessage", async (req, res) => {
     )
   ) {
     var inputs = [userId, channelName, topic, data, 0, 0];
+    connection.query(
+      `UPDATE users SET numPosts = numPosts + 1 WHERE userId = '${userId}'`,
+      function (err, result, fields) {
+        if (err) {
+          throw err;
+        }
+      }
+    );
     insertIntoPosts(inputs)
       .then((result) => {
         console.log("Post successfully received.");
@@ -306,6 +314,70 @@ app.post("/post/:channelName", (req, res) => {
   } else {
     console.log("Error: Channel name is not .");
     res.json([]);
+    return;
+  }
+});
+
+app.post("/postEmote/like", (req, res) => {
+  var id = req.body.id;
+  var userId = req.body.userId;
+
+  try {
+    connection.query(
+      `UPDATE postMessages SET thumbsUp = thumbsUp + 1 WHERE id = ${id}`,
+      function (err, result, fields) {
+        if (err) {
+          res.send("error");
+          return;
+        }
+      }
+    );
+    connection.query(
+      `UPDATE users SET numLikes = numLikes + 1 WHERE userId = '${userId}'`,
+      function (err, result, fields) {
+        if (err) {
+          res.send("error");
+          return;
+        }
+        res.send("ok");
+        return;
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    res.send("error");
+    return;
+  }
+});
+
+app.post("/postEmote/dislike", (req, res) => {
+  var id = req.body.id;
+  var userId = req.body.userId;
+
+  try {
+    connection.query(
+      `UPDATE postMessages SET thumbsDown = thumbsDown + 1 WHERE id = ${id}`,
+      function (err, result, fields) {
+        if (err) {
+          res.send("error");
+          return;
+        }
+      }
+    );
+    connection.query(
+      `UPDATE users SET numDislikes = numDislikes + 1 WHERE userId = '${userId}'`,
+      function (err, result, fields) {
+        if (err) {
+          res.send("error");
+          return;
+        }
+        res.send("ok");
+        return;
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    res.send("error");
     return;
   }
 });

@@ -165,6 +165,31 @@ function App() {
               <button
                 className="toHome"
                 onClick={() => {
+                  fetch("http://localhost:8080/login", {
+                    method: "POST",
+                    body: `userId=${getUserId}&password=${getPassword}`,
+                    headers: {
+                      "Content-type": "application/x-www-form-urlencoded",
+                    },
+                  })
+                    .then((response) =>
+                      response.json().then((data) => ({
+                        status: response.status,
+                        body: data,
+                      }))
+                    )
+                    .then((obj) => {
+                      if (obj.status !== 200) {
+                        alert("Error: Credentials not Validated, Sign In.");
+                      } else {
+                        setUsername(obj.body.name);
+                        setNumPosts(obj.body.numPosts);
+                        setNumLikes(obj.body.numLikes);
+                        setNumDislikes(obj.body.numDislikes);
+                        setNumReplies(obj.body.numReplies);
+                      }
+                    })
+                    .catch((err) => alert(`Error Login: ${err}`));
                   setSignUp(false);
                   setSignIn(false);
                   setApp(true);

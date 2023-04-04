@@ -111,7 +111,7 @@ const Messaging = ({
               })
                 .then((response) => response.text())
                 .then((response) => {
-                  if (response != "ok") {
+                  if (response !== "ok") {
                     alert(`Error: Server cannot Add the New Planet.`);
                   }
                 })
@@ -153,10 +153,82 @@ const Messaging = ({
                     <p>{post.data}</p>
                   </button>
                   <div className="emotes">
-                    <button className="emote-button">
+                    <button
+                      className="emote-button"
+                      onClick={(e) => {
+                        fetch(`http://localhost:8080/postEmote/like`, {
+                          method: "POST",
+                          body: `id=${post.id}&userId=${getUserId}&`,
+                          headers: {
+                            "Content-type": "application/x-www-form-urlencoded",
+                          },
+                        })
+                          .then((response) => response.text())
+                          .then((response) => {
+                            if (response !== "ok") {
+                              alert("Error: Like was not Sent.");
+                            }
+                          })
+                          .then(() => {
+                            fetch(
+                              `http://localhost:8080/post/${selectedChannelName}`,
+                              {
+                                method: "POST",
+                                body: ``,
+                                headers: {
+                                  "Content-type":
+                                    "application/x-www-form-urlencoded",
+                                },
+                              }
+                            )
+                              .then((response) => response.json())
+                              .then((response) => {
+                                setPosts(response);
+                              })
+                              .catch((error) => console.error(error));
+                          })
+                          .catch((err) => alert(`Error Post: ${err}`));
+                      }}
+                    >
                       <BiLike /> {post.thumbsUp}
                     </button>
-                    <button className="emote-button">
+                    <button
+                      className="emote-button"
+                      onClick={(e) => {
+                        fetch(`http://localhost:8080/postEmote/dislike`, {
+                          method: "POST",
+                          body: `id=${post.id}&userId=${getUserId}&`,
+                          headers: {
+                            "Content-type": "application/x-www-form-urlencoded",
+                          },
+                        })
+                          .then((response) => response.text())
+                          .then((response) => {
+                            if (response !== "ok") {
+                              alert("Error: Dislike was not Sent.");
+                            }
+                          })
+                          .then(() => {
+                            fetch(
+                              `http://localhost:8080/post/${selectedChannelName}`,
+                              {
+                                method: "POST",
+                                body: ``,
+                                headers: {
+                                  "Content-type":
+                                    "application/x-www-form-urlencoded",
+                                },
+                              }
+                            )
+                              .then((response) => response.json())
+                              .then((response) => {
+                                setPosts(response);
+                              })
+                              .catch((error) => console.error(error));
+                          })
+                          .catch((err) => alert(`Error Post: ${err}`));
+                      }}
+                    >
                       <BiDislike /> {post.thumbsDown}
                     </button>
                   </div>
