@@ -29,7 +29,53 @@ try {
 
 app.use(cors());
 
+/* FUNCTIONS */
+const postInsertQuery = `INSERT INTO postMessages (userId, channelName, topic, data, thumbsUp, thumbsDown) VALUES (?, ?, ?, ?, ?, ?)`;
+async function insertIntoPosts(data) {
+  try {
+    // Execute the INSERT query asynchronously
+    const info = await connection.query(postInsertQuery, data);
+
+    // Return the result of the INSERT query
+    return info;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+const channelInsertQuery = `INSERT INTO channels (channelName, description) VALUES (?, ?)`;
+async function insertIntoChannels(data) {
+  try {
+    // Execute the INSERT query asynchronously
+    const info = await connection.query(channelInsertQuery, data);
+
+    // Return the result of the INSERT query
+    return info;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+const accountInsertQuery = `INSERT INTO users (name, userId, password, numPosts, numLikes, numDislikes, numReplies) VALUES (?, ?, ?, ?, ? ,? ,?)`;
+async function insertIntoUsers(data) {
+  try {
+    // Execute the INSERT query asynchronously
+    const info = await connection.query(accountInsertQuery, data);
+
+    // Return the result of the INSERT query
+    return info;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+/* ------------------------------------------------------------------------------------------- */
+
 /* initializes the MYSQL database and returns the html file */
+
+// Create the Database
 connection.query(
   `CREATE DATABASE IF NOT EXISTS project`,
   function (error, result) {
@@ -37,10 +83,83 @@ connection.query(
   }
 );
 
-/* Use the database name project */
+// Use the newly created Database
 connection.query(`USE project`, function (error, result) {
   if (error) console.log(error);
 });
+
+// initialize the table for the User Accounts
+connection.query(
+  `CREATE TABLE IF NOT EXISTS users
+  (id int unsigned NOT NULL auto_increment,
+  name varchar(50) NOT NULL,
+  userId varchar(50) NOT NULL,
+  password varchar(50) NOT NULL,
+  numPosts int unsigned NOT NULL,
+  numLikes int unsigned NOT NULL,
+  numDislikes int unsigned NOT NULL,
+  numReplies int unsigned NOT NULL,
+  PRIMARY KEY (id)
+  )`,
+  function (error, result) {
+    if (error) console.log(error);
+  }
+);
+
+// initialize the table for the Channels in the Server
+connection.query(
+  `CREATE TABLE IF NOT EXISTS channels
+  (id int unsigned NOT NULL auto_increment,
+  channelName varchar(50) NOT NULL,
+  description varchar(100) NOT NULL,
+  PRIMARY KEY (id)
+  )`,
+  function (error, result) {
+    if (error) console.log(error);
+  }
+);
+
+// initialize the table for the Posts in the Server
+connection.query(
+  `CREATE TABLE IF NOT EXISTS postMessages
+  (id int unsigned NOT NULL auto_increment,
+  topic varchar(100) NOT NULL,
+  data varchar(200) NOT NULL,
+  channelName varchar(50) NOT NULL,
+  userId varchar(50) NOT NULL,
+  thumbsUp int unsigned NOT NULL,
+  thumbsDown int unsigned NOT NULL,
+  PRIMARY KEY (id)
+  )`,
+  function (error, result) {
+    if (error) console.log(error);
+  }
+);
+
+// Initialize an administrator account for advanced modification
+connection.query(
+  `SELECT * FROM users WHERE name = 'Administrator' AND userId = 'admin' AND password = 'admin'`,
+  function (err, result, fields) {
+    if (err) {
+      throw err;
+    }
+    if (result.length === 0) {
+      var inputs = ["Administrator", "admin", "admin", 0, 0, 0, 0];
+      insertIntoUsers(inputs)
+        .then((result) => {
+          console.log("Administrator Account Successfully Created...");
+        })
+        .catch((error) => {
+          console.error(
+            "Error adding Administrator Account INSERT query:",
+            error
+          );
+        });
+    }
+  }
+);
+
+console.log("Tables Initialized...");
 
 // * NOTES
 /* 
@@ -58,60 +177,6 @@ connection.query(`USE project`, function (error, result) {
   - admin mode only accessible screen (user = admin, pass = admin)
 */
 
-// initialize the table for the User Accounts
-connection.query(
-  `CREATE TABLE IF NOT EXISTS users
-  (id int unsigned NOT NULL auto_increment,
-  name varchar(1000) NOT NULL,
-  userId varchar(1000) NOT NULL,
-  password varchar(1000) NOT NULL,
-  numPosts int unsigned NOT NULL,
-  numLikes int unsigned NOT NULL,
-  numDislikes int unsigned NOT NULL,
-  numReplies int unsigned NOT NULL,
-  PRIMARY KEY (id)
-  )`,
-  function (error, result) {
-    if (error) console.log(error);
-  }
-);
-
-// Initialize an administrator account for advanced modification
-var query = `INSERT IGNORE INTO users (name, userId, password) VALUES ('Administrator', 'admin', 'admin' )`;
-connection.query(query, function (error, result) {
-  if (error) console.log(error);
-});
-
-// initialize the table for the Channels in the Server
-connection.query(
-  `CREATE TABLE IF NOT EXISTS channels
-  (id int unsigned NOT NULL auto_increment,
-  channelName varchar(1000) NOT NULL,
-  description varchar(3000) NOT NULL,
-  PRIMARY KEY (id)
-  )`,
-  function (error, result) {
-    if (error) console.log(error);
-  }
-);
-
-// initialize the table for the Posts in the Server
-connection.query(
-  `CREATE TABLE IF NOT EXISTS posts
-  (id int unsigned NOT NULL auto_increment,
-  topic varchar(1000) NOT NULL,
-  data varchar(1000) NOT NULL,
-  channelId int unsigned NOT NULL,
-  userId varchar(1000) NOT NULL,
-  thumbsUp int unsigned NOT NULL,
-  thumbsDown int unsigned NOT NULL,
-  PRIMARY KEY (id)
-  )`,
-  function (error, result) {
-    if (error) console.log(error);
-  }
-);
-
 /*---------------------------------------- METHODS ------------------------------------------------*/
 
 /* Login */
@@ -119,30 +184,32 @@ app.post("/login", (req, res) => {
   var userId = req.body.userId;
   var password = req.body.password;
 
-  connection.query(`SELECT * FROM users`, function (err, result, fields) {
-    if (err) throw err;
-    for (var i = 0; i < result.length; i++) {
-      if (
-        (result[i]["userId"] == userId) &
-        (result[i]["password"] == password)
-      ) {
-        var user = {
-          id: result[i]["id"],
-          name: result[i]["name"],
-          userId: result[i]["userId"],
-          password: result[i]["password"],
-          numPosts: result[i]["numPosts"],
-          numLikes: result[i]["numLikes"],
-          numDislikes: result[i]["numDislikes"],
-          numReplies: result[i]["numReplies"],
-        };
-        res.json(user);
-        console.log("Login Successful.");
+  connection.query(
+    `SELECT * FROM users WHERE userId = '${userId}' AND password = '${password}'`,
+    function (err, result, fields) {
+      if (err) {
+        res.status(404).json("Incorrect Username or Password.");
         return;
       }
+      if (result.length === 0) {
+        res.status(404).json("Incorrect Username or Password.");
+        return;
+      }
+      var user = {
+        id: result[0]["id"],
+        name: result[0]["name"],
+        userId: result[0]["userId"],
+        password: result[0]["password"],
+        numPosts: result[0]["numPosts"],
+        numLikes: result[0]["numLikes"],
+        numDislikes: result[0]["numDislikes"],
+        numReplies: result[0]["numReplies"],
+      };
+      res.json(user);
+      console.log("Login Successful.");
+      return;
     }
-    res.status(404).json("Incorrect Username or Password.");
-  });
+  );
 });
 
 /* Sign Up */
@@ -153,29 +220,94 @@ app.post("/signup", (req, res) => {
 
   if (!(name == "" || userId == "" || password == "")) {
     // Check if UserID and Name already exists
-    connection.query(`SELECT * FROM users`, function (err, result, fields) {
-      if (err) throw err;
-      for (var i = 0; i < result.length; i++) {
-        if ((result[i]["userId"] == userId) & (result[i]["name"] == name)) {
-          res.status(404);
+    connection.query(
+      `SELECT * FROM users WHERE userId = '${userId}' AND name = '${name}';`,
+      function (err, result, fields) {
+        if (err) {
+          res.send("error");
+          return;
+        }
+        if (result.length === 0) {
+          var inputs = [name, userId, password, 0, 0, 0, 0];
+          insertIntoUsers(inputs)
+            .then((result) => {
+              console.log("Account Successfully Created...");
+              res.send("ok");
+              return;
+            })
+            .catch((error) => {
+              console.error("Error executing Account INSERT query:", error);
+              res.send("error");
+              return;
+            });
+        } else {
+          res.send("error");
           return;
         }
       }
-    });
-
-    var query = `INSERT IGNORE INTO users (name, userId, password) VALUES ('${name}', '${userId}', '${password}')`;
-
-    connection.query(query, function (error, result) {
-      if (error) console.log(error);
-      else {
-        res.status(200);
-        console.log("Account Successfully Created...");
-        return;
-      }
-    });
+    );
+  } else {
+    res.send("error");
+    return;
   }
-  res.status(404);
-  return;
+});
+
+/* Post */
+app.post("/postMessage", async (req, res) => {
+  var userId = req.body.userId;
+  var channelName = req.body.channelName;
+  var topic = req.body.topic;
+  var data = req.body.data;
+
+  if (
+    !(
+      userId == "" ||
+      channelName == "Select Channel" ||
+      topic == "" ||
+      data == ""
+    )
+  ) {
+    var inputs = [userId, channelName, topic, data, 0, 0];
+    insertIntoPosts(inputs)
+      .then((result) => {
+        console.log("Post successfully received.");
+        res.send("ok");
+        return;
+      })
+      .catch((error) => {
+        console.error("Error inserting Post:", error);
+        res.send("error");
+        return;
+      });
+  } else {
+    console.error("Error inserting Post with Invalid parameters.");
+    res.send("error");
+    return;
+  }
+});
+
+app.post("/post/:channelName", (req, res) => {
+  var channelName = req.params.channelName;
+  if (channelName != "") {
+    try {
+      connection.query(
+        `SELECT * FROM postMessages WHERE channelName = '${channelName}'`,
+        function (err, result, fields) {
+          if (err) throw err;
+          res.json(result);
+          return;
+        }
+      );
+    } catch (error) {
+      console.log(error);
+      res.json([]);
+      return;
+    }
+  } else {
+    console.log("Error: Channel name is not .");
+    res.json([]);
+    return;
+  }
 });
 
 /* Channel */
@@ -186,79 +318,32 @@ app
     var description = req.body.description;
 
     if (!(channelName == "" || description == "")) {
-      var query = `INSERT INTO channels (channelName, description) VALUES ('${channelName}', '${description}')`;
-
-      connection.query(query, function (error, result) {
-        if (error) console.log(error);
-        else res.status(200);
-        return;
-      });
+      var inputs = [channelName, description];
+      insertIntoChannels(inputs)
+        .then((result) => {
+          console.log("INSERT query executed successfully");
+          res.send("ok");
+          return;
+        })
+        .catch((error) => {
+          console.error("Error executing INSERT query:", error);
+          res.send("error");
+          return;
+        });
+    } else {
+      res.send("error");
+      return;
     }
-    res.status(404);
-    return;
   })
   .get((req, res) => {
-    var channelList = [];
     connection.query(`SELECT * FROM channels`, function (err, result, fields) {
-      if (err) throw err;
-      for (var i = 0; i < result.length; i++) {
-        channelList.push({
-          id: result[i]["id"],
-          channelName: result[i]["channelName"],
-          description: result[i]["description"],
-        });
+      if (err) {
+        res.status(404).json("Cannot get the channels.");
+        return;
       }
-      res.json(channelList);
+      res.json(result);
     });
   });
-
-/* Post */
-app.post("/postMessage", (req, res) => {
-  var userId = req.body.userId;
-  var channelId = req.body.channelId;
-  var topic = req.body.topic;
-  var data = req.body.data;
-  // console.log(userId);
-  // console.log(channelId);
-  // console.log(topic);
-  // console.log(data);
-  if (!(userId == "" || channelId == 99999 || topic == "" || data == "")) {
-    var query = `INSERT INTO posts (userId, channelId, topic, data, thumbsUp, thumbsDown) VALUES ('${userId}', '${channelId}', '${topic}', '${data}', '0', '0')`;
-
-    connection.query(query, function (error, result) {
-      if (error) {
-        console.log(error);
-      }
-      res.status(200);
-      return;
-    });
-  }
-});
-
-app.post("/post/:channelId", (req, res) => {
-  var channelId = req.params.channelId;
-  var postList = [];
-  if (channelId == 99999) {
-    connection.query(`SELECT * FROM posts`, function (err, result, fields) {
-      if (err) throw err;
-      for (var i = 0; i < result.length; i++) {
-        if (result[i]["channelId"] == channelId) {
-          postList.push({
-            id: result[i]["id"],
-            topic: result[i]["topic"],
-            data: result[i]["data"],
-            channelId: result[i]["channelId"],
-            userId: result[i]["userId"],
-            thumbsUp: result[i]["thumbsUp"],
-            thumbsDown: result[i]["thumbsDown"],
-          });
-        }
-      }
-    });
-  }
-  res.json(postList);
-  return;
-});
 
 app.use("/", express.static("."));
 

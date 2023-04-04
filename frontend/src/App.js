@@ -12,21 +12,6 @@ import SignIn from "./SignIn";
 function App() {
   const navigate = useNavigate();
 
-  // Handle the case where the refresh button is clicked in the browser
-  // useEffect(() => {
-  //   const handleUnload = (e) => {
-  //     e.preventDefault();
-  //     console.log("Redirecting to Sign In Page.");
-  //     window.location.href = "/";
-  //   };
-
-  //   window.addEventListener("unload", handleUnload);
-
-  //   return () => {
-  //     window.removeEventListener("unload", handleUnload);
-  //   };
-  // }, []);
-
   // UI button Visibility Controls
   const [inSignIn, setSignIn] = useState(true);
   const [inSignUp, setSignUp] = useState(false);
@@ -48,7 +33,7 @@ function App() {
 
   // Channel Controls
   const [getChannels, setChannels] = useState([]);
-  const [selectedChannelId, setSelectedChannelId] = useState(99999);
+  const [selectedChannelId, setSelectedChannelId] = useState(0);
   const [selectedChannelName, setSelectedChannelName] =
     useState("Select Channel");
   const [selectedChannelDescription, setSelectedChannelDescription] = useState(
@@ -57,11 +42,6 @@ function App() {
 
   // Post Controls
   const [getPosts, setPosts] = useState([]);
-
-  // const [getID, setID] = useState("");
-  // const [isPostMode, setPostMode] = useState(true);
-  // const [getChannel, setChannel] = useState("");
-  // const [getRefresh, setRefresh] = useState(true);
 
   return (
     <div className="App">
@@ -161,10 +141,11 @@ function App() {
                     "Content-type": "application/x-www-form-urlencoded",
                   },
                 })
+                  .then((response) => response.text())
                   .then((response) => {
-                    if (response.status !== 200) {
+                    if (response !== "ok") {
                       alert(
-                        `Error: Invalid Data Sent , or Account already exists.`
+                        `Error: Invalid Data Sent, or Account already exists.`
                       );
                     } else {
                       alert(`Successfully created and Account.`);
@@ -207,6 +188,22 @@ function App() {
                         setSelectedChannelId(response[0].id);
                         setSelectedChannelName(response[0].channelName);
                         setSelectedChannelDescription(response[0].description);
+                        fetch(
+                          `http://localhost:8080/post/${response[0].channelName}`,
+                          {
+                            method: "POST",
+                            body: ``,
+                            headers: {
+                              "Content-type":
+                                "application/x-www-form-urlencoded",
+                            },
+                          }
+                        )
+                          .then((response) => response.json())
+                          .then((response) => {
+                            setPosts(response);
+                          })
+                          .catch((error) => console.error(error));
                       }
                     })
                     .catch((err) => alert(`Error Login: ${err}`));

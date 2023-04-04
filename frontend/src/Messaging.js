@@ -57,7 +57,7 @@ const Messaging = ({
                 className="group"
                 title={channel.description}
                 onClick={() => {
-                  fetch(`http://localhost:8080/post/${channel.id}`, {
+                  fetch(`http://localhost:8080/post/${channel.channelName}`, {
                     method: "POST",
                     body: ``,
                     headers: {
@@ -66,11 +66,7 @@ const Messaging = ({
                   })
                     .then((response) => response.json())
                     .then((response) => {
-                      if (!response.ok) {
-                        setPosts([]);
-                      } else {
-                        setPosts(response);
-                      }
+                      setPosts(response);
                     })
                     .catch((error) => console.error(error));
                   setSelectedChannelId(channel.id);
@@ -113,8 +109,9 @@ const Messaging = ({
                   "Content-type": "application/x-www-form-urlencoded",
                 },
               })
+                .then((response) => response.text())
                 .then((response) => {
-                  if (response.status !== 200) {
+                  if (response != "ok") {
                     alert(`Error: Server cannot Add the New Planet.`);
                   }
                 })
@@ -147,8 +144,6 @@ const Messaging = ({
         </div>
         <div className="messages">
           <div>
-            {/* This is where the posts will be mapped */}
-            {/* ADD FETCH TO FETCH FROM THE GIVEN CHANNEL ID FROM THE TOP */}
             <>
               {getPosts.map((post) => (
                 <div className="message-box">
@@ -190,20 +185,21 @@ const Messaging = ({
             onClick={(e) => {
               fetch("http://localhost:8080/postMessage", {
                 method: "POST",
-                body: `topic=${getCurrentTopic}&data=${getCurrentData}&userId=${getUserId}&channelId=${selectedChannelId}`,
+                body: `topic=${getCurrentTopic}&data=${getCurrentData}&userId=${getUserId}&channelName=${selectedChannelName}`,
                 headers: {
                   "Content-type": "application/x-www-form-urlencoded",
                 },
               })
+                .then((response) => response.text())
                 .then((response) => {
-                  if (!response.ok) {
+                  if (response !== "ok") {
                     alert("Error: Message was not Sent.");
                   } else {
                     alert("Post Sent!");
                   }
                 })
                 .then(() => {
-                  fetch(`http://localhost:8080/post/${selectedChannelId}`, {
+                  fetch(`http://localhost:8080/post/${selectedChannelName}`, {
                     method: "POST",
                     body: ``,
                     headers: {
@@ -212,11 +208,7 @@ const Messaging = ({
                   })
                     .then((response) => response.json())
                     .then((response) => {
-                      if (!response.ok) {
-                        setPosts([]);
-                      } else {
-                        setPosts(response);
-                      }
+                      setPosts(response);
                     })
                     .catch((error) => console.error(error));
                   setCurrentTopic("");
