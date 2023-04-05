@@ -20,14 +20,6 @@ const Home = ({
         </div>
         <div className="profile-name">Name: {getUsername}</div>
         <div className="profile-id">Profile-ID: {getUserId}</div>
-        {/* <input
-          name=""
-          className="profile-description"
-          placeholder="About Me..."
-        /> */}
-        {/* <button className="update-description">
-          <FiUpload />
-        </button> */}
       </div>
       <div className="section-stats">
         <h1 className="section-stats-title">Stats</h1>

@@ -199,6 +199,63 @@
   color: white;
 }
 
+.to-admin-back {
+  position: absolute;
+  width: 8vw;
+  height: 15vh;
+  top: 30vh;
+  left: 6vw;
+  background-color: gray;
+  border: 2px solid black;
+  border-radius: 50px;
+  z-index: 1;
+}
+
+.to-admin-front {
+  position: absolute;
+  width: 8vw;
+  height: 15vh;
+  top: 31vh;
+  left: 5vw;
+  background-color: lightgray;
+  border: 2px solid black;
+  border-radius: 50px;
+  z-index: 2;
+}
+
+.to-admin-holo {
+  position: absolute;
+  width: 6vw;
+  height: 11vh;
+  top: 33vh;
+  left: 6vw;
+  background-color: rgb(4, 210, 4);
+  border: 2px solid rgb(4, 244, 4);
+  border-radius: 50px;
+  z-index: 3;
+}
+
+.toAdmin {
+  position: absolute;
+  width: 6vw;
+  height: 11vh;
+  top: 33.5vh;
+  left: 5.5vw;
+  background-color: rgb(4, 160, 4);
+  border: 2px solid rgb(4, 244, 4);
+  opacity: 0.6;
+  font-size: 1vw;
+  font-family: "Orbitron", sans-serif;
+  border-radius: 50px;
+  z-index: 4;
+}
+
+.toAdmin:hover {
+  background-color: darkcyan;
+  transition: 0.3s ease;
+  color: white;
+}
+
 .signin {
   position: absolute;
   width: 6vw;

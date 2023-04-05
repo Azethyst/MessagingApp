@@ -71,6 +71,20 @@ async function insertIntoUsers(data) {
     throw error;
   }
 }
+
+const replyInsertQuery = `INSERT INTO replies (userId, postReplyId, comment, isForPost, thumbsUp, thumbsDown) VALUES (?, ?, ?, ?, ?, ?)`;
+async function insertIntoReplies(data) {
+  try {
+    // Execute the INSERT query asynchronously
+    const info = await connection.query(replyInsertQuery, data);
+
+    // Return the result of the INSERT query
+    return info;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
 /* ------------------------------------------------------------------------------------------- */
 
 /* initializes the MYSQL database and returns the html file */
@@ -136,6 +150,23 @@ connection.query(
   }
 );
 
+// initialize the table for the Replies in the Server
+connection.query(
+  `CREATE TABLE IF NOT EXISTS replies
+  (id int unsigned NOT NULL auto_increment,
+  comment varchar(200) NOT NULL,
+  postReplyId int unsigned NOT NULL,
+  userId varchar(50) NOT NULL,
+  isForPost int NOT NULL,
+  thumbsUp int unsigned NOT NULL,
+  thumbsDown int unsigned NOT NULL,
+  PRIMARY KEY (id)
+  )`,
+  function (error, result) {
+    if (error) console.log(error);
+  }
+);
+
 // Initialize an administrator account for advanced modification
 connection.query(
   `SELECT * FROM users WHERE name = 'Administrator' AND userId = 'admin' AND password = 'admin'`,
@@ -170,7 +201,7 @@ console.log("Tables Initialized...");
   POST TABLE:
   each post contains - id, topic, data, channelID, userID, thumbsUp, thumbsDown
   REPLY TABLE: 
-  each reply contains - id, postId, comment, replies{}, thumbsUp, thumbsDown
+  each reply contains - id, postReplyId, comment, userId, isForPost,thumbsUp, thumbsDown
 
   TO IMPLEMENT NOTES:
   - added search mehanisms for users and their data
@@ -252,8 +283,18 @@ app.post("/signup", (req, res) => {
   }
 });
 
+app.get("/users", (req, res) => {
+  connection.query(`SELECT * FROM users`, function (err, result, fields) {
+    if (err) {
+      res.status(404).json("Cannot get the channels.");
+      return;
+    }
+    res.json(result);
+  });
+});
+
 /* Post Methods */
-app.post("/postMessage", async (req, res) => {
+app.post("/postMessage", (req, res) => {
   var userId = req.body.userId;
   var channelName = req.body.channelName;
   var topic = req.body.topic;
@@ -294,6 +335,19 @@ app.post("/postMessage", async (req, res) => {
   }
 });
 
+app.get("/getPost", (req, res) => {
+  connection.query(
+    `SELECT * FROM postMessages`,
+    function (err, result, fields) {
+      if (err) {
+        res.status(404).json("Cannot get the channels.");
+        return;
+      }
+      res.json(result);
+    }
+  );
+});
+
 app.post("/post/:channelName", (req, res) => {
   var channelName = req.params.channelName;
   if (channelName != "") {
@@ -312,7 +366,7 @@ app.post("/post/:channelName", (req, res) => {
       return;
     }
   } else {
-    console.log("Error: Channel name is not .");
+    console.log("Error: Channel name is not Specified.");
     res.json([]);
     return;
   }
@@ -378,6 +432,79 @@ app.post("/postEmote/dislike", (req, res) => {
   } catch (error) {
     console.log(error);
     res.send("error");
+    return;
+  }
+});
+
+/* Reply Methods */
+app.post("/postReply", (req, res) => {
+  var userId = req.body.userId;
+  var postReplyId = req.body.postReplyId;
+  var comment = req.body.comment;
+  var isForPost = req.body.isForPost;
+
+  if (!(userId == "" || postReplyId == 0 || comment == "" || isForPost == 0)) {
+    var inputs = [userId, postReplyId, comment, isForPost, 0, 0];
+    connection.query(
+      `UPDATE users SET numReplies = numReplies + 1 WHERE userId = '${userId}'`,
+      function (err, result, fields) {
+        if (err) {
+          throw err;
+        }
+      }
+    );
+    insertIntoReplies(inputs)
+      .then((result) => {
+        console.log("Reply successfully received.");
+        res.send("ok");
+        return;
+      })
+      .catch((error) => {
+        console.error("Error inserting Reply:", error);
+        res.send("error");
+        return;
+      });
+  } else {
+    console.error("Error inserting Reply with Invalid parameters.");
+    res.send("error");
+    return;
+  }
+});
+
+app.get("/replies", (req, res) => {
+  connection.query(`SELECT * FROM replies`, function (err, result, fields) {
+    if (err) {
+      res.status(404).json("Cannot get the channels.");
+      return;
+    }
+    res.json(result);
+  });
+});
+
+app.post("/reply/:postReplyId/:isForPost", (req, res) => {
+  var postReplyId = req.params.postReplyId;
+  var isForPost = req.params.isForPost;
+  if (postReplyId !== 0 && isForPost !== 0) {
+    // isFromPost will be integer for this scenario - 0:Reply, 1:Post
+    try {
+      connection.query(
+        `SELECT * FROM replies WHERE postReplyId = ${postReplyId} AND isForPost = ${isForPost}`,
+        function (err, result, fields) {
+          if (err) {
+            throw err;
+          }
+          res.json(result);
+          return;
+        }
+      );
+    } catch (error) {
+      console.log(error);
+      res.json([]);
+      return;
+    }
+  } else {
+    console.log("Error: No Posts/Replies chosen to be replied.");
+    res.json([]);
     return;
   }
 });

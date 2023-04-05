@@ -8,6 +8,7 @@ import Messaging from "./Messaging";
 import Landing from "./Landing";
 import SignUp from "./SignUp";
 import SignIn from "./SignIn";
+import Admin from "./Admin";
 
 function App() {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ function App() {
   const [inSignIn, setSignIn] = useState(true);
   const [inSignUp, setSignUp] = useState(false);
   const [inApp, setApp] = useState(false);
+  const [inHome, setHome] = useState(false);
 
   // Sign Up Controls
   const [signName, setSignName] = useState("");
@@ -42,6 +44,11 @@ function App() {
 
   // Post Controls
   const [getPosts, setPosts] = useState([]);
+  const [getPostMode, setPostMode] = useState(true);
+  const [getSelectedPostTopic, setSelectedPostTopic] = useState("");
+  const [getSelectedPostData, setSelectedPostData] = useState("");
+  const [getSelectedPostUserId, setSelectedPostUserId] = useState("");
+  const [getSelectedPostId, setSelectedPostId] = useState(0);
 
   return (
     <div className="App">
@@ -56,6 +63,16 @@ function App() {
         <div className="holo-main"></div>
         <div className="holo-button-right"></div>
         <div className="holo-button-left"></div>
+        {inApp &&
+          inHome &&
+          getUsername === "Administrator" &&
+          getUserId === "admin" && (
+            <>
+              <div className="to-admin-back"></div>
+              <div className="to-admin-front"></div>
+              <div className="to-admin-holo"></div>
+            </>
+          )}
       </div>
       <header className="App-header">
         <div>
@@ -193,6 +210,12 @@ function App() {
                   setSignUp(false);
                   setSignIn(false);
                   setApp(true);
+                  setHome(true);
+                  setPostMode(true);
+                  setSelectedPostTopic("");
+                  setSelectedPostData("");
+                  setSelectedPostUserId("");
+                  setSelectedPostId(0);
                 }}
               >
                 <p>Home</p>
@@ -232,10 +255,15 @@ function App() {
                       }
                     })
                     .catch((err) => alert(`Error Login: ${err}`));
-                  // also fetch the post contents of this channel
                   setSignUp(false);
                   setSignIn(false);
                   setApp(true);
+                  setHome(false);
+                  setPostMode(true);
+                  setSelectedPostTopic("");
+                  setSelectedPostData("");
+                  setSelectedPostUserId("");
+                  setSelectedPostId(0);
                 }}
               >
                 <p>Messaging</p>
@@ -243,6 +271,21 @@ function App() {
               </button>
             </Link>
           )}
+          {inApp &&
+            inHome &&
+            getUsername === "Administrator" &&
+            getUserId === "admin" && (
+              <Link to="/admin">
+                <button
+                  className="toAdmin"
+                  onClick={() => {
+                    setHome(false);
+                  }}
+                >
+                  ADMIN MODE
+                </button>
+              </Link>
+            )}
           <Routes>
             <Route
               exact
@@ -283,6 +326,7 @@ function App() {
                 />
               }
             />
+            <Route path="/admin" element={<Admin />} />
             <Route
               path="/messaging"
               element={
@@ -298,6 +342,16 @@ function App() {
                   getPosts={getPosts}
                   setPosts={setPosts}
                   getUserId={getUserId}
+                  getPostMode={getPostMode}
+                  setPostMode={setPostMode}
+                  getSelectedPostTopic={getSelectedPostTopic}
+                  setSelectedPostTopic={setSelectedPostTopic}
+                  getSelectedPostData={getSelectedPostData}
+                  setSelectedPostData={setSelectedPostData}
+                  getSelectedPostUserId={getSelectedPostUserId}
+                  setSelectedPostUserId={setSelectedPostUserId}
+                  getSelectedPostId={getSelectedPostId}
+                  setSelectedPostId={setSelectedPostId}
                 />
               }
             />
