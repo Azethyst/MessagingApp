@@ -293,6 +293,21 @@ app.get("/users", (req, res) => {
   });
 });
 
+app.delete("/users/:id", (req, res) => {
+  const id = req.params.id;
+
+  connection.query(`DELETE FROM users WHERE id = ${id}`, (error, result) => {
+    if (error) {
+      console.error("Error deleting User:", error);
+      res.send("error");
+      return;
+    }
+
+    console.log("User successfully deleted.");
+    res.send("ok");
+  });
+});
+
 /* Post Methods */
 app.post("/postMessage", (req, res) => {
   var userId = req.body.userId;
@@ -436,14 +451,32 @@ app.post("/postEmote/dislike", (req, res) => {
   }
 });
 
+app.delete("/post/:id", (req, res) => {
+  const id = req.params.id;
+
+  connection.query(
+    `DELETE FROM postMessages WHERE id = ${id}`,
+    (error, result) => {
+      if (error) {
+        console.error("Error deleting Post:", error);
+        res.send("error");
+        return;
+      }
+
+      console.log("Post successfully deleted.");
+      res.send("ok");
+    }
+  );
+});
+
 /* Reply Methods */
 app.post("/postReply", (req, res) => {
   var userId = req.body.userId;
   var postReplyId = req.body.postReplyId;
   var comment = req.body.comment;
   var isForPost = req.body.isForPost;
-
-  if (!(userId == "" || postReplyId == 0 || comment == "" || isForPost == 0)) {
+  console.log(isForPost);
+  if (!(userId == "" || postReplyId == 0 || comment == "")) {
     var inputs = [userId, postReplyId, comment, isForPost, 0, 0];
     connection.query(
       `UPDATE users SET numReplies = numReplies + 1 WHERE userId = '${userId}'`,
@@ -484,7 +517,7 @@ app.get("/replies", (req, res) => {
 app.post("/reply/:postReplyId/:isForPost", (req, res) => {
   var postReplyId = req.params.postReplyId;
   var isForPost = req.params.isForPost;
-  if (postReplyId !== 0 && isForPost !== 0) {
+  if (postReplyId !== 0) {
     // isFromPost will be integer for this scenario - 0:Reply, 1:Post
     try {
       connection.query(
@@ -505,6 +538,85 @@ app.post("/reply/:postReplyId/:isForPost", (req, res) => {
   } else {
     console.log("Error: No Posts/Replies chosen to be replied.");
     res.json([]);
+    return;
+  }
+});
+
+app.delete("/reply/:id", (req, res) => {
+  const id = req.params.id;
+
+  connection.query(`DELETE FROM replies WHERE id = ${id}`, (error, result) => {
+    if (error) {
+      console.error("Error deleting Reply:", error);
+      res.send("error");
+      return;
+    }
+
+    console.log("Reply successfully deleted.");
+    res.send("ok");
+  });
+});
+
+app.post("/reply/like", (req, res) => {
+  var id = req.body.id;
+  var userId = req.body.userId;
+
+  try {
+    connection.query(
+      `UPDATE replies SET thumbsUp = thumbsUp + 1 WHERE id = ${id}`,
+      function (err, result, fields) {
+        if (err) {
+          res.send("error");
+          return;
+        }
+      }
+    );
+    connection.query(
+      `UPDATE users SET numLikes = numLikes + 1 WHERE userId = '${userId}'`,
+      function (err, result, fields) {
+        if (err) {
+          res.send("error");
+          return;
+        }
+        res.send("ok");
+        return;
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    res.send("error");
+    return;
+  }
+});
+
+app.post("/reply/dislike", (req, res) => {
+  var id = req.body.id;
+  var userId = req.body.userId;
+
+  try {
+    connection.query(
+      `UPDATE replies SET thumbsDown = thumbsDown + 1 WHERE id = ${id}`,
+      function (err, result, fields) {
+        if (err) {
+          res.send("error");
+          return;
+        }
+      }
+    );
+    connection.query(
+      `UPDATE users SET numDislikes = numDislikes + 1 WHERE userId = '${userId}'`,
+      function (err, result, fields) {
+        if (err) {
+          res.send("error");
+          return;
+        }
+        res.send("ok");
+        return;
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    res.send("error");
     return;
   }
 });
@@ -543,6 +655,21 @@ app
       res.json(result);
     });
   });
+
+app.delete("/channel/:id", (req, res) => {
+  const id = req.params.id;
+
+  connection.query(`DELETE FROM channels WHERE id = ${id}`, (error, result) => {
+    if (error) {
+      console.error("Error deleting Channel:", error);
+      res.send("error");
+      return;
+    }
+
+    console.log("Channel successfully deleted.");
+    res.send("ok");
+  });
+});
 
 app.use("/", express.static("."));
 

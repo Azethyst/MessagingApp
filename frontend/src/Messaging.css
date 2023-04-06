@@ -215,11 +215,85 @@
   font-family: "Orbitron", sans-serif;
 }
 
+.search-box {
+  position: absolute;
+  width: 20%;
+  height: 100%;
+  right: 32%;
+  z-index: 6;
+}
+
+.user-search {
+  position: absolute;
+  height: 60%;
+  width: 35%;
+  right: 10%;
+  top: 20%;
+  background-color: rgb(4, 160, 4);
+  padding-top: 0.3vw;
+  font-size: 1.2vw;
+  border: 2px solid black;
+  border-radius: 40px;
+  z-index: 6;
+}
+
+.user-search:hover {
+  background-color: darkcyan;
+  transition: 0.3s ease;
+  color: white;
+}
+
+.outline-user-search {
+  position: absolute;
+  height: 60%;
+  width: 35%;
+  right: 10%;
+  top: 20%;
+  background-color: rgb(4, 160, 4);
+  border: none;
+  outline: 5px solid black;
+  border-radius: 40px;
+  z-index: 5;
+}
+
+.text-search {
+  position: absolute;
+  height: 60%;
+  width: 35%;
+  left: 10%;
+  top: 20%;
+  background-color: rgb(4, 160, 4);
+  padding-top: 0.3vw;
+  font-size: 1.2vw;
+  border: 2px solid black;
+  border-radius: 40px;
+  z-index: 6;
+}
+
+.text-search:hover {
+  background-color: darkcyan;
+  transition: 0.3s ease;
+  color: white;
+}
+
+.outline-text-search {
+  position: absolute;
+  height: 60%;
+  width: 35%;
+  left: 10%;
+  top: 20%;
+  background-color: rgb(4, 160, 4);
+  border: none;
+  outline: 5px solid black;
+  border-radius: 40px;
+  z-index: 5;
+}
+
 .search-message {
   position: absolute;
   top: 2vh;
-  left: 30vw;
-  width: 12vw;
+  left: 34vw;
+  width: 8vw;
   height: 6vh;
   padding-left: 1vw;
   font-size: 0.8vw;
@@ -230,6 +304,25 @@
   border: 2px solid black;
   border-bottom-left-radius: 100px;
   border-top-left-radius: 100px;
+}
+
+.cancel-search {
+  position: absolute;
+  background-color: rgb(4, 160, 4);
+  width: 1.1vw;
+  height: 2vh;
+  font-size: 1vw;
+  padding: 0;
+  top: 44%;
+  right: 15%;
+  color: black;
+  outline: none;
+  border: none;
+  z-index: 6;
+}
+
+.cancel-search:hover {
+  font-size: 1.1vw;
 }
 
 .submit-search {
@@ -414,6 +507,7 @@
   font-family: "Orbitron", sans-serif;
   background-color: rgb(4, 160, 4);
   text-align: left;
+  z-index: 6;
 }
 
 .emote-button:hover {
@@ -446,13 +540,13 @@
   font-size: 1.2vw;
   margin: 0;
   top: 0;
-  border-bottom: 1px solid black;
+  /* border-bottom: 1px solid black; */
 }
 
 .return-posts {
-  position: relative;
-  top: -14vh;
-  right: -20vw;
+  position: absolute;
+  top: 3vh;
+  right: 5vw;
   width: 3.5vw;
   height: 3.5vw;
   font-size: 1.8vw;
@@ -462,6 +556,7 @@
   background-color: rgb(4, 160, 4);
   border: 2px solid black;
   border-radius: 5px;
+  z-index: 20;
 }
 
 .return-posts:hover {

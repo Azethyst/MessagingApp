@@ -50,6 +50,13 @@ function App() {
   const [getSelectedPostUserId, setSelectedPostUserId] = useState("");
   const [getSelectedPostId, setSelectedPostId] = useState(0);
 
+  // Reply Controls
+  const [getReturnState, setReturnState] = useState([]);
+
+  // Search Mode
+  const [getSearchMode, setSearchMode] = useState(true); // true = text, false = user
+  const [getTempSearchHolder, setTempSearchHolder] = useState([]);
+
   return (
     <div className="App">
       <div className="Materials">
@@ -216,6 +223,8 @@ function App() {
                   setSelectedPostData("");
                   setSelectedPostUserId("");
                   setSelectedPostId(0);
+                  setReturnState([]);
+                  setTempSearchHolder([]);
                 }}
               >
                 <p>Home</p>
@@ -252,6 +261,14 @@ function App() {
                             setPosts(response);
                           })
                           .catch((error) => console.error(error));
+                      } else {
+                        setSelectedChannelId(0);
+                        setSelectedChannelName("Select Channel");
+                        setSelectedChannelDescription("");
+                        setReturnState([]);
+                        setPosts([]);
+                        setSearchMode(true);
+                        setTempSearchHolder([]);
                       }
                     })
                     .catch((err) => alert(`Error Login: ${err}`));
@@ -352,6 +369,12 @@ function App() {
                   setSelectedPostUserId={setSelectedPostUserId}
                   getSelectedPostId={getSelectedPostId}
                   setSelectedPostId={setSelectedPostId}
+                  getReturnState={getReturnState}
+                  setReturnState={setReturnState}
+                  getSearchMode={getSearchMode}
+                  setSearchMode={setSearchMode}
+                  getTempSearchHolder={getTempSearchHolder}
+                  setTempSearchHolder={setTempSearchHolder}
                 />
               }
             />
